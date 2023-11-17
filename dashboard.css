@@ -1,0 +1,10 @@
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .card {
+    margin-top: 50px;
+  }
+  #username {
+    font-weight: bold;
+  }

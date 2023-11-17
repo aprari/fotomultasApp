@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Categoría de Multas</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<script>
+		$(document).ready(function(){
+			// objeto para almacenar los datos ingresados
+			var categorias = {};
+			// función para actualizar la tabla con los datos ingresados
+			function actualizarTabla(){
+				// limpiar la tabla
+				$('#tabla-categorias tbody').empty();
+				// recorrer el objeto de categorias y agregar cada una a la tabla
+				for (var id in categorias){
+					$('#tabla-categorias tbody').append('<tr><td>' + id + '</td><td>' + categorias[id].descripcion + '</td><td>' + categorias[id].costo + '</td></tr>');
+				}
+			}
+			// función para agregar una nueva categoría
+			function agregarCategoria(id, descripcion, costo){
+				// si el id ya existe, autocompletar la descripción y el costo
+				if (id in categorias){
+					descripcion = categorias[id].descripcion;
+					costo = categorias[id].costo;
+				}
+				// agregar la categoría al objeto
+				categorias[id] = {'descripcion': descripcion, 'costo': costo};
+				// actualizar la tabla
+				actualizarTabla();
+				// limpiar el formulario
+				$('#id-categoria').val('');
+				$('#descripcion').val('');
+				$('#costo').val('');
+			}
+			// manejar el envío del formulario
+			$('#formulario-categoria').submit(function(event){
+				event.preventDefault();
+				var id = $('#id-categoria').val();
+				var descripcion = $('#descripcion').val();
+				var costo = $('#costo').val();
+				agregarCategoria(id, descripcion, costo);
+			});
+		});
+	</script>
+</head>
+<body>
+	<div class="container mt-3">
+		<h1>Categoría de Multas</h1>
+		<form id="formulario-categoria">
+			<div class="form-group">
+				<label for="id-categoria">ID Categoría Multas:</label>
+				<input type="text" class="form-control" id="id-categoria" name="id-categoria">
+			</div>
+			<div class="form-group">
+				<label for="descripcion">Descripción:</label>
+				<input type="text" class="form-control" id="descripcion" name="descripcion">
+			</div>
+			<div class="form-group">
+				<label for="costo">Costo:</label>
+				<input type="text" class="form-control"
+                class="form-control" id="costo" name="costo">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Agregar</button>
+        </form>
+
+        <table class="table mt-3" id="tabla-categorias">
+            <thead>
+                <tr>
+                    <th>ID Categoría Multas</th>
+                    <th>Descripción</th>
+                    <th>Costo</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

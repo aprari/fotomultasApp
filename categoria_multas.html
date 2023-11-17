@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Categoría de Multas</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<script>
+		$(document).ready(function(){
+			$("#id-categoria").change(function () {
+   				 var idCategoria = $("#id-categoria").val();
+
+				$.ajax({
+				url: "consulta_multas.php",
+				type: "POST",
+				data: { id : idCategoria },
+					success: function (response) {
+						$("#category").val(response);
+					},
+				});
+  			});
+			// objeto para almacenar los datos ingresados
+			var categorias = {};
+			// función para actualizar la tabla con los datos ingresados
+			function actualizarTabla(){
+				// limpiar la tabla
+				$('#tabla-categorias tbody').empty();
+				// recorrer el objeto de categorias y agregar cada una a la tabla
+				for (var id in categorias){
+					$('#tabla-categorias tbody').append('<tr><td>' + id + '</td><td>' + categorias[id].descripcion + '</td><td>' + categorias[id].costo + '</td><td><button class="btn btn-sm btn-primary editar" data-id="' + id + '">Editar</button> <button class="btn btn-sm btn-danger borrar" data-id="' + id + '">Borrar</button></td></tr>');
+				}
+
+				// agregar eventos para los botones de editar y borrar
+				$('.editar').click(function(){
+					var id = $(this).data('id');
+					var descripcion = categorias[id].descripcion;
+					var costo = categorias[id].costo;
+					$('#id-categoria').val(id);
+					$('#descripcion').val(descripcion);
+					$('#costo').val(costo);
+					$('#id-categoria').prop('disabled', true);
+					$('#boton-agregar').hide();
+					$('#boton-actualizar').show();
+				});
+				$('.borrar').click(function(){
+					var id = $(this).data('id');
+					delete categorias[id];
+					actualizarTabla();
+				});
+
+				
+			}
+
+			// función para agregar una nueva categoría
+			function agregarCategoria(id, descripcion, costo){
+				// si el id ya existe, autocompletar la descripción y el costo
+				if (id in categorias){
+					descripcion = categorias[id].descripcion;
+					costo = categorias[id].costo;
+				}
+				// agregar la categoría al objeto
+				categorias[id] = {'descripcion': descripcion, 'costo': costo};
+				// actualizar la tabla
+				actualizarTabla();
+				// limpiar el formulario
+				$('#id-categoria').val('');
+				$('#descripcion').val('');
+				$('#costo').val('');
+			}
+			// manejar el envío del formulario
+			$('#formulario-categoria').submit(function(event){
+				event.preventDefault();
+				var id = $('#id-categoria').val();
+				var descripcion = $('#descripcion').val();
+				var costo = $('#costo').val();
+				agregarCategoria(id, descripcion, costo);
+			});
+			// manejar el botón de actualizar
+			$('#boton-actualizar').click(function(){
+				var id = $('#id-categoria').val();
+				var descripcion = $('#descripcion').val();
+				var costo = $('#costo').val();
+
+				categorias[id].descripcion = descripcion;
+				categorias[id].costo = costo;
+				actualizarTabla();
+				$('#id-categoria').prop('disabled', false);
+				$('#boton-agregar').show();
+				$('#boton-actualizar').hide();
+				$('#id-categoria').val('');
+				$('#descripcion').val('');
+				$('#costo').val('');
+			});
+
+			$('#id-categoria').on('blur', function() {
+   				 var id = $(this).val();
+    			if (categorias[id]) {
+        			$('#descripcion').val(categorias[id].descripcion);
+        			$('#costo').val(categorias[id].costo);
+    			} else {
+       				 $('#descripcion').val('');
+       				 $('#costo').val('');
+    			}
+		});
+
+
+		});
+</script>
+
+</head>
+<body>
+	<div class="container mt-5">
+		<h1>Categoría de Multas</h1>
+		<form id="formulario-categoria">
+			<div class="form-group">
+				<label for="id-categoria">ID:</label>
+				<input type="number" class="form-control" id="id-categoria" name="id-categoria">
+			</div>
+			<div class="form-group">
+				<label for="descripcion">Descripción:</label>
+				<input type="text" class="form-control" id="descripcion" name="descripcion">
+			</div>
+			<div class="form-group">
+				<label for="costo">Costo:</label>
+				<input type="number" class="form-control" id="costo" name="costo">
+			</div>
+			<button type="submit" class="btn btn-primary" id="boton-agregar">Agregar</button>
+			<button type="button" class="btn btn-success" id="boton-actualizar" style="display: none;">Actualizar</button>
+		
+		</form>
+		<table class="table table-striped mt-5" id="tabla-categorias">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Descripción</th>
+					<th>Costo</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

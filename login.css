@@ -1,0 +1,21 @@
+body {
+	padding-top: 4rem;
+}
+
+.card {
+	margin-top: 2rem;
+}
+
+.card-title {
+	font-size: 2.2rem;
+	text-align: center;
+}
+
+input[type=text], input[type=password] {
+	font-size: 1.8rem;
+}
+
+button {
+	margin-top: 2rem;
+	width: 100%;
+}
